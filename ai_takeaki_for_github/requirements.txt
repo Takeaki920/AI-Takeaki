@@ -4,3 +4,4 @@ chromadb
 openai
 python-dotenv
 docx2txt
+langchain-community
