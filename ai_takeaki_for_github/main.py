@@ -1,26 +1,64 @@
-
 import streamlit as st
 from query import ask_ai
 
+# ページ設定
 st.set_page_config(page_title="AIたけあき", layout="centered")
-st.title("🤖 AIたけあき")
-st.caption("あなたの分身として、過去の文章をもとに応答します。")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# カスタムCSSで背景・アイコン・タイトルデザイン
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("https://raw.githubusercontent.com/YOUR_USERNAME/ai-takeaki/main/assets/bg.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        font-family: 'Arial', sans-serif;
+    }}
+    .block-container {{
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 2rem 2rem 1rem 2rem;
+        border-radius: 1.25rem;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        max-width: 700px;
+        margin: auto;
+    }}
+    .title-box {{
+        text-align: center;
+        margin-bottom: 1rem;
+    }}
+    .title-box img {{
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 0.5rem;
+    }}
+    .title-box h1 {{
+        font-size: 2.5rem;
+        color: #333;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-for message in st.session_state.messages:
-    role, text = message
-    with st.chat_message(role):
-        st.markdown(text)
+# タイトルエリア
+st.markdown(
+    """
+    <div class="title-box">
+        <img src="https://raw.githubusercontent.com/YOUR_USERNAME/ai-takeaki/main/assets/icon.png" alt="AIたけあき アイコン">
+        <h1>AIたけあき</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-query = st.chat_input("質問を入力してください")
+# ユーザー入力
+query = st.text_input("質問をどうぞ", placeholder="例：明るい未来のためにどうしたらいい？")
+
+# 回答表示
 if query:
-    with st.chat_message("user"):
-        st.markdown(query)
-    st.session_state.messages.append(("user", query))
-
-    with st.chat_message("assistant"):
+    with st.spinner("考え中..."):
         response = ask_ai(query)
-        st.markdown(response)
-    st.session_state.messages.append(("assistant", response))
+    st.markdown("### 回答")
+    st.markdown(f"> {response}")
