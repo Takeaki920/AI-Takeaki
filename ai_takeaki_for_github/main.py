@@ -3,10 +3,13 @@ from query import ask_ai
 
 st.set_page_config(page_title="AIたけあき", layout="centered")
 
-# デザイン適用
+# CSS＋デザイン適用
 st.markdown(
     f"""
     <style>
+    html, body, .stApp {{
+        height: 100%;
+    }}
     .stApp {{
         background-image: url("https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/assets/bg.jpg");
         background-size: cover;
@@ -40,16 +43,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# アイコンとタイトル表示
 st.markdown(
     """
-    <div style='text-align: center; margin-top: 30px;'>
-        <img src="https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/assets/icon.png" width="120" style="border-radius: 50%;">
-        <h1 style='font-size: 2.5rem; margin-top: 10px;'>AIたけあき</h1>
+    <div class="title-box">
+        <img src="https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/assets/icon.png">
+        <h1>AIたけあき</h1>
     </div>
     """,
     unsafe_allow_html=True
 )
 
+# 質問入力と回答表示
 query = st.text_input("質問をどうぞ", placeholder="例：明るい未来のためにどうしたらいい？")
 
 if query:
