@@ -8,7 +8,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/ai_takeaki_for_github/assets/bg.jpg");
+        background-image: url("https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/assets/bg.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -42,9 +42,9 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="title-box">
-        <img src="https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/ai_takeaki_for_github/assets/icon.png">
-        <h1>AIたけあき</h1>
+    <div style='text-align: center; margin-top: 30px;'>
+        <img src="https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/assets/icon.png" width="120" style="border-radius: 50%;">
+        <h1 style='font-size: 2.5rem; margin-top: 10px;'>AIたけあき</h1>
     </div>
     """,
     unsafe_allow_html=True
