@@ -1,19 +1,11 @@
-import streamlit as st
-from query import ask_ai
-
-# ページ設定
-st.set_page_config(page_title="AIたけあき", layout="centered")
-
-# カスタムCSSで背景・アイコン・タイトルデザイン
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://raw.githubusercontent.com/YOUR_USERNAME/ai-takeaki/main/assets/bg.jpg");
+        background-image: url("https://raw.githubusercontent.com/Takeaki920/ai_takeaki_for_github/main/assets/bg.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        font-family: 'Arial', sans-serif;
     }}
     .block-container {{
         background-color: rgba(255, 255, 255, 0.85);
@@ -42,23 +34,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# タイトルエリア
 st.markdown(
     """
     <div class="title-box">
-        <img src="https://raw.githubusercontent.com/YOUR_USERNAME/ai-takeaki/main/assets/icon.png" alt="AIたけあき アイコン">
+        <img src="https://raw.githubusercontent.com/Takeaki920/ai_takeaki_for_github/main/assets/icon.png" alt="AIたけあき アイコン">
         <h1>AIたけあき</h1>
     </div>
     """,
     unsafe_allow_html=True
 )
-
-# ユーザー入力
-query = st.text_input("質問をどうぞ", placeholder="例：明るい未来のためにどうしたらいい？")
-
-# 回答表示
-if query:
-    with st.spinner("考え中..."):
-        response = ask_ai(query)
-    st.markdown("### 回答")
-    st.markdown(f"> {response}")
