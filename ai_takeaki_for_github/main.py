@@ -3,11 +3,12 @@ from query import ask_ai
 
 st.set_page_config(page_title="AIたけあき", layout="centered")
 
+# デザイン適用
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://raw.githubusercontent.com/Takeaki920/ai_takeaki_for_github/main/assets/bg.jpg");
+        background-image: url("https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/ai_takeaki_for_github/assets/bg.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -42,7 +43,7 @@ st.markdown(
 st.markdown(
     """
     <div class="title-box">
-        <img src="https://raw.githubusercontent.com/Takeaki920/ai_takeaki_for_github/main/assets/icon.png" alt="AIたけあき アイコン">
+        <img src="https://raw.githubusercontent.com/Takeaki920/AI-Takeaki/main/ai_takeaki_for_github/assets/icon.png">
         <h1>AIたけあき</h1>
     </div>
     """,
