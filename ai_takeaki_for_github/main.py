@@ -1,3 +1,8 @@
+import streamlit as st
+from query import ask_ai
+
+st.set_page_config(page_title="AIたけあき", layout="centered")
+
 st.markdown(
     f"""
     <style>
@@ -43,3 +48,11 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+query = st.text_input("質問をどうぞ", placeholder="例：明るい未来のためにどうしたらいい？")
+
+if query:
+    with st.spinner("考え中..."):
+        response = ask_ai(query)
+    st.markdown("### 回答")
+    st.markdown(f"> {response}")
