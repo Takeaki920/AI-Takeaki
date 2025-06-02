@@ -1,32 +1,33 @@
-from dotenv import load_dotenv
-load_dotenv()
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.document_loaders import DirectoryLoader, Docx2txtLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
+import glob
+import docx2txt
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import OpenAIEmbeddings
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def load_documents_from_docs_folder(folder_path):
+    documents = []
+    for filepath in glob.glob(os.path.join(folder_path, "*.docx")):
+        text = docx2txt.process(filepath)
+        documents.append(text)
+    return documents
+
+def split_texts(texts):
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    return splitter.create_documents(texts)
 
 def load_and_embed():
-    # ドキュメントの読み込み（docxとtxtをサポート）
-    loaders = [
-        DirectoryLoader("docs", glob="**/*.docx", loader_cls=Docx2txtLoader),
-        DirectoryLoader("docs", glob="**/*.txt", loader_cls=TextLoader),
-    ]
-    documents = []
-    for loader in loaders:
-        documents.extend(loader.load())
+    docs_path = "docs"
+    texts = load_documents_from_docs_folder(docs_path)
+    documents = split_texts(texts)
 
-    # テキストを分割
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = splitter.split_documents(documents)
-
-    # 埋め込み生成
     embeddings = OpenAIEmbeddings()
-    vectorstore = FAISS.from_documents(docs, embeddings)
+    vectorstore = FAISS.from_documents(documents, embeddings)
+    vectorstore.save_local("faiss_index")  # ← これが必要！
+    print("✅ FAISSベクトルDBの作成が完了しました。")
 
-    # 保存
-    vectorstore.save_local("faiss_index")
-
-def load_vectorstore():
-    embeddings = OpenAIEmbeddings()
-    return FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+if __name__ == "__main__":
+    load_and_embed()
