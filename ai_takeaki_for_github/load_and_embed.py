@@ -1,34 +1,30 @@
-
-import os
-import glob
-import docx2txt
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-from dotenv import load_dotenv
-
-load_dotenv()
-
-def load_documents_from_docs_folder(folder_path):
-    documents = []
-    for filepath in glob.glob(os.path.join(folder_path, "*.docx")):
-        text = docx2txt.process(filepath)
-        documents.append(text)
-    return documents
-
-def split_texts(texts):
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    return splitter.create_documents(texts)
+from langchain.vectorstores import FAISS
+from langchain.document_loaders import DirectoryLoader, Docx2txtLoader, TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os
 
 def load_and_embed():
-    docs_path = "docs"
-    texts = load_documents_from_docs_folder(docs_path)
-    documents = split_texts(texts)
+    # ドキュメントの読み込み（docxとtxtをサポート）
+    loaders = [
+        DirectoryLoader("docs", glob="**/*.docx", loader_cls=Docx2txtLoader),
+        DirectoryLoader("docs", glob="**/*.txt", loader_cls=TextLoader),
+    ]
+    documents = []
+    for loader in loaders:
+        documents.extend(loader.load())
 
+    # テキストを分割
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    docs = splitter.split_documents(documents)
+
+    # 埋め込み生成
     embeddings = OpenAIEmbeddings()
-    vectorstore = Chroma.from_documents(documents, embeddings, persist_directory="chroma_store")
-    vectorstore.persist()
-    print("✅ ベクトルDBの作成が完了しました。")
+    vectorstore = FAISS.from_documents(docs, embeddings)
 
-if __name__ == "__main__":
-    load_and_embed()
+    # 保存
+    vectorstore.save_local("faiss_index")
+
+def load_vectorstore():
+    embeddings = OpenAIEmbeddings()
+    return FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
