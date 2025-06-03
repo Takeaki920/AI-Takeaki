@@ -5,6 +5,13 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain_community.embeddings import OpenAIEmbeddings
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+api_key = os.getenv("OPENAI_API_KEY")
+
+
 def load_vectorstore():
     embeddings = OpenAIEmbeddings()
     return FAISS.load_local("faiss_index", embeddings)
