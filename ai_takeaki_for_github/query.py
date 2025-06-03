@@ -1,34 +1,39 @@
-import streamlit as st
-from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
+from langchain.vectorstores import FAISS
 from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+
+import os
 
 def load_vectorstore():
-    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
-    return FAISS.load_local("faiss_index", embeddings)
+    return FAISS.load_local("faiss_index", OpenAIEmbeddings(), allow_dangerous_deserialization=True)
 
 def create_qa_chain():
-    llm = ChatOpenAI(temperature=0, openai_api_key=st.secrets["OPENAI_API_KEY"])
+    llm = ChatOpenAI(temperature=0)
 
     prompt = PromptTemplate(
         input_variables=["context", "question"],
         template="""
 あなたは「AIたけあき」です。以下の文脈に基づいて、誠実かつやさしく回答してください。
 
-文脈：
 {context}
 
-質問：
-{question}
-
-日本語で丁寧に答えてください。
+質問: {question}
 """
     )
 
-    return RetrievalQA.from_chain_type(
+    vectorstore = load_vectorstore()
+
+    qa = RetrievalQA.from_chain_type(
         llm=llm,
-        retriever=load_vectorstore().as_retriever(),
+        chain_type="stuff",
+        retriever=vectorstore.as_retriever(),
         chain_type_kwargs={"prompt": prompt}
     )
+
+    return qa
+
+def ask_ai(query):
+    qa = create_qa_chain()
+    return qa.run(query)
