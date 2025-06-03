@@ -22,12 +22,15 @@ def split_texts(texts):
 def load_and_embed():
     docs_path = "docs"
     texts = load_documents_from_docs_folder(docs_path)
+    if not texts:
+        print("❌ ドキュメントが見つかりませんでした。")
+        return
     documents = split_texts(texts)
 
     embeddings = OpenAIEmbeddings()
     vectorstore = FAISS.from_documents(documents, embeddings)
-    vectorstore.save_local("faiss_index")  # ← これが必要！
-    print("✅ FAISSベクトルDBの作成が完了しました。")
+    vectorstore.save_local("faiss_index")
+    print("✅ FAISSインデックスの作成が完了しました。")
 
 if __name__ == "__main__":
     load_and_embed()
